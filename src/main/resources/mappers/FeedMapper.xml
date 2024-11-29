@@ -11,7 +11,7 @@
     </insert>
 
     <select id="selFeedList">
-        SELECT F.feed_id AS feedId, U.user_id AS writerId,
+        SELECT F.feed_id AS feedId, U.user_id AS writerUserId,
             if(U.nick_name IS NULL, U.uid, U.nick_name) AS writerNm,
             U.pic AS writerPic, F.contents, F.location, F.created_at AS createdAt
             , if(L.feed_id IS NULL,0,1) AS isLike

@@ -10,7 +10,7 @@ import java.util.List;
 @Setter
 public class FeedGetRes {
     private long feedId;
-    private long writerId;
+    private long writerUserId;
     private String writerNm;
     private String writerPic;
     private String contents;

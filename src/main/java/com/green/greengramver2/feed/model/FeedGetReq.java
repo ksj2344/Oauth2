@@ -19,9 +19,9 @@ public class FeedGetReq extends Paging {
 
     //@BindParam : "signed_user_id" 이렇게 요청 들어오면 애노테이션 붙은 파라미터랑 연결함
     //@ConstructorProperties({"page","size","signed_user_id"}) <-@BindParam식으로 여러개 하려면 일케
-    public FeedGetReq(Integer page, Integer size, @BindParam("signed_user_id") long userId) {
+    public FeedGetReq(Integer page, Integer size, @BindParam("signed_user_id") long signedUserId) {
         super(page, size);
-        signedUserId = userId;
-        log.info("page: {}, size: {}, userId: {}", page, size, userId);
+        this.signedUserId = signedUserId;
+        log.info("page: {}, size: {}, userId: {}", page, size, signedUserId);
     }
 }

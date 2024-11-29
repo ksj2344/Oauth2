@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.green.greengramver2.feed.FeedMapper">
+    <insert id="insFeed" useGeneratedKeys="true" keyProperty="feedId">
+        INSERT INTO feed
+            SET writer_user_id=#{writerUserId}
+             , contents=#{contents}
+             , location=#{location}
+    </insert>
+
+    <select id="selFeedList">
+        SELECT F.feed_id AS feedId, U.user_id AS writerId,
+            if(U.nick_name IS NULL, U.uid, U.nick_name) AS writerNm,
+            U.pic AS writerPic, F.contents, F.location, F.created_at AS createdAt
+            , if(L.feed_id IS NULL,0,1) AS isLike
+        FROM feed F
+        INNER JOIN user U
+            ON writer_user_id = U.user_id
+        left jOIN feed_like L
+            ON L.feed_id=F.feed_id
+            AND L.user_id=#{signedUserId}
+        ORDER BY F.feed_id DESC
+        LIMIT #{startIdx}, #{size}
+    </select>
+
+
+</mapper>

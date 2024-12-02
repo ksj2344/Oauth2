@@ -10,12 +10,11 @@ import org.springframework.stereotype.Service;
 public class FeedLikeService {
     private final FeedLikeMapper mapper;
 
-    //좋아요 등록시 return 1, 좋아요 취소시 return 0
     public int feedLikeToggle(FeedLikeReq p){
-        int result = mapper.delFeedLike(p);
+        int result = mapper.delFeedLike(p); //영향받은 행으로 처리가 가능함
         if(result == 0){
-            return mapper.insFeedLike(p);
+            return mapper.insFeedLike(p); //좋아요 처리시 return 1
         }
-        return 0;
+        return 0; //좋아요 취소 시 return 0
     }
 }

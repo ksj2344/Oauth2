@@ -1,6 +1,10 @@
 package com.green.greengramver2.feed;
 
 import com.green.greengramver2.common.MyFileUtils;
+import com.green.greengramver2.feed.comment.FeedCommentMapper;
+import com.green.greengramver2.feed.comment.model.FeedCommentDto;
+import com.green.greengramver2.feed.comment.model.FeedCommentGetReq;
+import com.green.greengramver2.feed.comment.model.FeedCommentGetRes;
 import com.green.greengramver2.feed.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,6 +20,7 @@ import java.util.List;
 public class FeedService {
     private final FeedMapper feedMapper;
     private final FeedPicsMapper feedPicsMapper;
+    private final FeedCommentMapper feedCommentMapper;
     private final MyFileUtils myFileUtils;
 
 
@@ -46,7 +51,7 @@ public class FeedService {
         FeedPicDto feedPicDto=new FeedPicDto();
         feedPicDto.setFeedId(feedId);
         feedPicDto.setPics(picNameList);
-        int resultPics=feedPicsMapper.insPeedPics(feedPicDto);
+        int resultPics=feedPicsMapper.insPeedPics2(feedPicDto);
 
         return FeedPostRes.builder()
                 .feedId(feedId)
@@ -55,12 +60,31 @@ public class FeedService {
     }
 
     public List<FeedGetRes> getFeedList(FeedGetReq p){
+        // N+1 이슈 발생
         List<FeedGetRes> list=feedMapper.selFeedList(p);
-
+        //피드 가져오기
         for(FeedGetRes res : list){
-            List<String> picList=feedPicsMapper.selFeedPicList(res.getFeedId());
-            res.setPics(picList);
+            //피드 사진 가져오기
+            res.setPics(feedPicsMapper.selFeedPicList(res.getFeedId()));
+
+            //피드 댓글 불러오기
+            FeedCommentGetReq commentGetReq=new FeedCommentGetReq();
+            commentGetReq.setPage(1); //startIdx=0, size=4 설정
+            commentGetReq.setFeedId(res.getFeedId()); //몇번 피드에 어떤 댓글들이 있는지 확인
+            List<FeedCommentDto> commentList = feedCommentMapper.selFeedCommentList(commentGetReq);
+
+            //댓글 목록 가져오기
+            FeedCommentGetRes commentGetRes=new FeedCommentGetRes();
+            commentGetRes.setCommentList(commentList);
+            //댓글 목록이 4개를 넘어가는지 검증. 넘어가면 더보기를 내야하니까.
+            commentGetRes.setMoreComment(commentList.size()==4);
+            if(commentGetRes.isMoreComment()){  //isMoreComment(): moreComment의 Geeter메소드(JAVA Bean 명명규칙)
+                //4개를 넘어도 화면에 뜨는것은 3개이도록.
+                commentList.remove(commentList.size()-1);
+            }
+            res.setComment(commentGetRes);
         }
         return list;
     }
+    //최대한 select를 줄이도록 하는 것이 개발자가 해야할 일. 좋은 방식은 아님.
 }

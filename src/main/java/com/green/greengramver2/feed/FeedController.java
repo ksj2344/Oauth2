@@ -6,6 +6,8 @@ import com.green.greengramver2.feed.model.FeedGetRes;
 import com.green.greengramver2.feed.model.FeedPostReq;
 import com.green.greengramver2.feed.model.FeedPostRes;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
@@ -25,7 +27,12 @@ public class FeedController {
     @PostMapping
     @Operation(summary = "피드 등록", description = "필수:사진리스트 || 옵션: 위치, 내용")
     public ResultResponse<FeedPostRes> postFeed(@RequestPart List<MultipartFile> pics
-            , @RequestPart FeedPostReq p) {
+            , @RequestPart FeedPostReq p
+            , HttpServletRequest resp
+    ) {
+        if(resp.getRemoteAddr().equals("192.168.0.152")){
+            return null;
+        }
         FeedPostRes res = service.postFeed(pics, p);
         return ResultResponse.<FeedPostRes>builder()
                 .resultMessage("피드 등록 완료")

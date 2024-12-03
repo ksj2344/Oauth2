@@ -26,4 +26,10 @@
         ORDER BY feed_comment_id DESC
         LIMIT #{startIdx}, #{size}
     </select>
+
+    <delete id="delFeedComment">
+        DELETE FROM feed_comments
+        WHERE feed_comment_id=#{feedCommentId}
+        AND user_id=#{userId}
+    </delete>
 </mapper>

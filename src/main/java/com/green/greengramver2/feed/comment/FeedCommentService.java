@@ -2,10 +2,7 @@ package com.green.greengramver2.feed.comment;
 
 import com.green.greengramver2.feed.FeedMapper;
 import com.green.greengramver2.feed.FeedService;
-import com.green.greengramver2.feed.comment.model.FeedCommentDto;
-import com.green.greengramver2.feed.comment.model.FeedCommentGetReq;
-import com.green.greengramver2.feed.comment.model.FeedCommentGetRes;
-import com.green.greengramver2.feed.comment.model.FeedCommentPostReq;
+import com.green.greengramver2.feed.comment.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,5 +35,9 @@ public class FeedCommentService {
             //commentList가 shallowCopy된거라 이걸로 해도됨
         }
         return res;
+    }
+
+    public int delComment(FeedCommentDelReq p){
+        return mapper.delFeedComment(p);
     }
 }

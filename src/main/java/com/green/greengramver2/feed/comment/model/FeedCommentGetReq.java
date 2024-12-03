@@ -31,17 +31,17 @@ public class FeedCommentGetReq{
         this.feedId = feedId;
         setPage(page);
     }
-
+    //startIdx는 start_idx로 받도록함
     public void setPage(int page){
         this.page = page;
         if(page<1){return;}
         if(page==1){
             startIdx=0;
-            size=FIRST_COMMENT_SIZE+1; //+1은 inMore 처리용
+            size=FIRST_COMMENT_SIZE+1; //+1은 isMore 처리용
             return;
         }
         startIdx = ((page-2)*DEFAULT_PAGE_SIZE)+FIRST_COMMENT_SIZE;
-        size=DEFAULT_PAGE_SIZE+1; //+1은 inMore 처리용
+        size=DEFAULT_PAGE_SIZE+1; //+1은 isMore 처리용
 
         //isMore 처리를 안하면 select 두번해야함
     }

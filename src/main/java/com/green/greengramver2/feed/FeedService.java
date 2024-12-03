@@ -64,22 +64,21 @@ public class FeedService {
         List<FeedGetRes> list=feedMapper.selFeedList(p);
         //피드 가져오기
         for(FeedGetRes res : list){
-            //피드 사진 가져오기
+            //피드 당 사진 리스트
             res.setPics(feedPicsMapper.selFeedPicList(res.getFeedId()));
 
-            //피드 댓글 불러오기
-            FeedCommentGetReq commentGetReq=new FeedCommentGetReq();
-            commentGetReq.setPage(1); //startIdx=0, size=4 설정
-            commentGetReq.setFeedId(res.getFeedId()); //몇번 피드에 어떤 댓글들이 있는지 확인
-            List<FeedCommentDto> commentList = feedCommentMapper.selFeedCommentList(commentGetReq);
+            //피드 당 댓굴 4
+            //몇번 피드에 어떤 댓글들이 있는지 확인을 위해 feedId설정, //page로 startIdx=0, size=4 설정
+            FeedCommentGetReq commentGetReq=new FeedCommentGetReq(res.getFeedId(), 1);
+            List<FeedCommentDto> commentList = feedCommentMapper.selFeedCommentList(commentGetReq); //가져올 튜플 최소0, 최대4
 
-            //댓글 목록 가져오기
-            FeedCommentGetRes commentGetRes=new FeedCommentGetRes();
+            FeedCommentGetRes commentGetRes=new FeedCommentGetRes(); //댓글에 관련한 정보를 담을 객체
             commentGetRes.setCommentList(commentList);
             //댓글 목록이 4개를 넘어가는지 검증. 넘어가면 더보기를 내야하니까.
-            commentGetRes.setMoreComment(commentList.size()==4);
-            if(commentGetRes.isMoreComment()){  //isMoreComment(): moreComment의 Geeter메소드(JAVA Bean 명명규칙)
-                //4개를 넘어도 화면에 뜨는것은 3개이도록.
+            commentGetRes.setMoreComment(commentList.size()==commentGetReq.getSize());//맞으면 true, 틀리면 false로 세팅
+            //commentGetReq.getSize(): page가 1이면 4, 2이상이면 21로 설정되어있음.
+            if(commentGetRes.isMoreComment()){  //isMoreComment(): moreComment의 Getter메소드(JAVA Bean 명명규칙)
+                //4개를 넘어도 화면에 뜨는것은 3개이도록 처리
                 commentList.remove(commentList.size()-1);
             }
             res.setComment(commentGetRes);

@@ -11,6 +11,8 @@
             , `comment`=#{comment}
     </insert>
 
+    <!-- 1페이지는 FeedService에서 쓸 것-->
+    <!-- 2페이지 이후는 FeedCommentService에서 쓸 것(더보기를 눌러야 나오는 케이스)-->
     <select id="selFeedCommentList">
         SELECT C.feed_comment_id AS feedCommentId,
         C.comment,

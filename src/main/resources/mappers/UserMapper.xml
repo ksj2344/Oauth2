@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.green.greengramver2.user.UserMapper">
+<mapper namespace="com.green.greengram.user.UserMapper">
     <insert id="insUser" useGeneratedKeys="true" keyProperty="userId">
         INSERT INTO user
         SET uid=#{uid}
@@ -18,4 +18,31 @@
         FROM user
         WHERE uid = #{uid}
     </select>
+
+    <select id="selUserInfo">
+        SELECT A.user_id AS userId, A.pic, A.created_at AS createdAt
+             , IF(A.nick_name IS NULL, A.uid, A.nick_name) AS nickName
+             , COUNT(DISTINCT F1.from_user_id, F1.to_user_id) AS `follower`
+             , COUNT(DISTINCT F2.from_user_id, F2.to_user_id) AS `following`
+             , COUNT(DISTINCT F3.feed_id) AS feedCount
+             , COUNT(DISTINCT F4.feed_id, F4.user_id) AS myFeedLikeCount
+             , MAX(IF(F1.from_user_id = #{signedUserId}, 1, 0))
+             + MAX(IF(F2.to_user_id = #{signedUserId}, 2, 0)) AS followState
+        FROM user A
+        LEFT JOIN user_follow F1
+        ON A.user_id = F1.to_user_id
+        LEFT JOIN user_follow F2
+        ON A.user_id = F2.from_user_id
+        LEFT JOIN feed F3
+        ON A.user_id = F3.writer_user_id
+        LEFT JOIN feed_like F4
+        ON F3.feed_id = F4.feed_id
+        WHERE A.user_id = #{profileUserId}
+    </select>
+
+    <update id="updUserPic">
+        UPDATE user
+        SET pic=#{picName}
+        WHERE user_id=#{signedUserId}
+    </update>
 </mapper>

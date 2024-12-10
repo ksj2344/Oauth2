@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.green.greengramver2.feed.FeedMapper">
+<mapper namespace="com.green.greengram.feed.FeedMapper">
     <insert id="insFeed" useGeneratedKeys="true" keyProperty="feedId">
         INSERT INTO feed
             SET writer_user_id=#{writerUserId}
@@ -17,7 +17,10 @@
             , if(L.feed_id IS NULL,0,1) AS isLike
         FROM feed F
         INNER JOIN user U
-            ON writer_user_id = U.user_id
+            ON U.user_id=F.writer_user_id
+        <if test="profileUserId !=null">
+            AND U.user_id=#{profileUserId}
+        </if>
         left jOIN feed_like L
             ON L.feed_id=F.feed_id
             AND L.user_id=#{signedUserId}
@@ -25,5 +28,23 @@
         LIMIT #{startIdx}, #{size}
     </select>
 
+    <delete id="delFeedLikeAndFeedCommentAndFeedPic">
+        DELETE B, C, D
+        FROM feed A
+        LEFT JOIN feed_like B
+        ON A.feed_id = B.feed_id
+        LEFT JOIN feed_comment C
+        ON A.feed_id = C.feed_id
+        LEFT JOIN feed_pic D
+        ON A.feed_id = D.feed_id
+        WHERE A.feed_id = #{feedId}
+        AND A.writer_user_id = #{signedUserId}
+    </delete>
+
+    <delete id="delFeed">
+        DELETE FROM feed
+        WHERE feed_id = #{feedId}
+        AND writer_user_id = #{signedUserId}
+    </delete>
 
 </mapper>

@@ -14,7 +14,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @Service
@@ -83,7 +85,91 @@ public class FeedService {
         }
         return list;
     }
-    //최대한 select를 줄이도록 하는 것이 개발자가 해야할 일. 좋은 방식은 아님.
+    //최대한 select를 줄이도록 하는 것이 개발자가 해야할 일. 좋은 방식은 아님. 그래서 아래처럼 처리
+
+    //select 3번으로처리. 피드 5,000개 있음, 페이지당 20개씩 가져온다.
+    public List<FeedGetRes> getFeedList2(FeedGetReq p){
+        //피드 리스트
+        List<FeedGetRes> list=feedMapper.selFeedList(p);
+
+        //feed_id를 골라내야한다.
+        List<Long> feedIds=new ArrayList<>(list.size());
+        for(FeedGetRes r:list){
+            feedIds.add(r.getFeedId());
+        }
+        /*
+         List<Long> feedIds=list.stream().map(FeedGetRes::getFeedId).colloect(Collectors.toList());
+    혹은 List<Long> feedIds=list.stream().map(item->((FeedGetRes)item).getFeedId()).toList();
+    혹은 List<Long> feedIds=list.stream().map(item->{return ((FeedGetRes)item).getFeedId();}).toList();
+        로 쓸 수있음
+        stream: 배열이든 list든 hashmap이든 stream으로 변환하면 다루는 방법이 다 같아짐
+        stream으로 변환했다 list 변환이 필요해서 for문보다 느림. 근데 여러번 가공할거면 stream쓰는게 낫다.
+        .map() : 똑같은 크기의 stream이 나옴.
+        (FeedGetRes::getFeedId): 괄호 안을 foreach처럼 복사
+        */
+
+        //피드와 관련된 사진 리스트
+        List<FeedPicSelDto> feedPicList=feedPicMapper.selFeedPicListByFeedIds(feedIds);
+        log.info("feedPicList:{}",feedPicList);
+
+        Map<Long, List<String>> picHashMap=new HashMap<>(); //feedPicMapper로 불러온 값과 feedMapper로 불러온 값을 매칭
+        for(FeedPicSelDto item:feedPicList){
+            long feedId=item.getFeedId();
+            //containsKey(key값) 이 key가 이 Map에 존재하나 확인하는 boolean
+            if(!picHashMap.containsKey(feedId)){ //feedId의 key값이 존재하지 않으면~
+                picHashMap.put(feedId, new ArrayList<String>(2)); //먼저 feedId key값과 List<String>이 들어갈 공간을 만들어줌
+            }
+            List<String> pics=picHashMap.get(feedId); //"map주소.get(key값)"은 value의 주소값이 리턴됨
+            pics.add(item.getPic());//value(List<String>타입)의 주소에 item의 사진이 추가됨
+        }
+
+        for(FeedGetRes res : list){
+            res.setPics(picHashMap.get(res.getFeedId()));
+        }
+        log.info("feedService>list:{}", list);
+
+        //피드와 관련된 댓글 리스트
+        List<FeedCommentDto> feedCommentList = feedCommentMapper.selFeedCommentListByFeedIds(feedIds);
+        Map<Long, FeedCommentGetRes> commentHashMap=new HashMap<>();
+        for(FeedCommentDto item:feedCommentList){
+            long feedId=item.getFeedId();
+            if(!commentHashMap.containsKey(feedId)){
+                FeedCommentGetRes feedCommentGetRes=new FeedCommentGetRes();
+                feedCommentGetRes.setCommentList(new ArrayList<>(4));
+                commentHashMap.put(feedId, feedCommentGetRes);
+            }
+            FeedCommentGetRes feedCommentGetRes=commentHashMap.get(feedId); //feedId번째의 hashmap value 주소값 객체
+            feedCommentGetRes.getCommentList().add(item); //해당 주소값에 item정보를 담은 리스트 추가
+        }
+
+        for(FeedGetRes res : list){
+            res.setPics(picHashMap.get(res.getFeedId()));
+            FeedCommentGetRes feedCommentGetRes=commentHashMap.get(res.getFeedId());
+
+            if(feedCommentGetRes==null){
+                feedCommentGetRes=new FeedCommentGetRes();
+                feedCommentGetRes.setCommentList(new ArrayList<>());
+            }else if(feedCommentGetRes.getCommentList().size()==4){
+                feedCommentGetRes.setMoreComment(true);
+                feedCommentGetRes.getCommentList().remove(feedCommentGetRes.getCommentList().size()-1);
+            }
+            res.setComment(feedCommentGetRes);
+        }
+        return list;
+    }
+
+    //select 2번으로처리
+    public List<FeedGetRes> getFeedList3(FeedGetReq p){
+        //피드 리스트
+        List<FeedGetRes> res=feedMapper.selFeedList(p);
+
+        //피드와 관련된 사진 리스트
+
+        //피드와 관련된 댓글 리스트
+
+        return null;
+    }
+
 
 
     @Transactional

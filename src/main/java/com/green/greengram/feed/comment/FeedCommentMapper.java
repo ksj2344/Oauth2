@@ -15,4 +15,6 @@ public interface FeedCommentMapper {
 
     // 이 과정에서 반환되는건 무조건 영향받은 행값(0 or 1)
     int delFeedComment(FeedCommentDelReq p);
+
+    List<FeedCommentDto> selFeedCommentListByFeedIds(List<Long> feedIds);
 }

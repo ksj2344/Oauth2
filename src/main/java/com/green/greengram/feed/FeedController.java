@@ -38,9 +38,9 @@ public class FeedController {
     @GetMapping
     @Operation(summary = "Feed리스트", description = "loginUserId는 로그인한 사용자의 pk")
     public ResultResponse<List<FeedGetRes>> getFeedList(@ParameterObject @ModelAttribute FeedGetReq p) {
-        log.info("FeedController>getFeedList>p:{}", p);
+        log.info("FeedController>getFeedList2>p:{}", p);
 
-        List<FeedGetRes> list = service.getFeedList(p);
+        List<FeedGetRes> list = service.getFeedList2(p);
         return ResultResponse.<List<FeedGetRes>>builder()
                 .resultMessage(String.format("%d개의 결과", list.size()))
                 .resultData(list)

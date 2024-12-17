@@ -70,9 +70,7 @@ public class UserService {
         //3. 원하는 위치에 저장할 파일명으로 파일을 이동(transferTo)한다.
         String filePath=String.format("user/%d/%s",p.getSignedUserId(),savedPicName);
         try {
-            if(p.getPic()!=null) {
             myFileUtils.transferTo(p.getPic(),filePath);
-            }
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -55,6 +55,5 @@
         AND T1.feed_comment_id <![CDATA[<]]> A.feed_comment_id
         ) <![CDATA[<]]> 4
         ORDER BY T1.feed_id, T1.feed_comment_id DESC
-
     </select>
 </mapper>

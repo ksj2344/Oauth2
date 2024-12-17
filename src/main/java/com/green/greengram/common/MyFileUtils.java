@@ -73,6 +73,7 @@ public class MyFileUtils {
 
     //파일을 원하는 경로(path)에 저장
     public void transferTo(MultipartFile mf, String path) throws IOException {
+        if(mf==null){return;}
         File file = new File(uploadPath, path);
         mf.transferTo(file);
         //여기 있는 transferTo는 어딘가에 MultipartFile 인터페이스가 구현화된 클래스의 메소드
@@ -81,10 +82,11 @@ public class MyFileUtils {
     public void deleteFolder(String path, boolean deleteRootFolder){
         File folder = new File(path);
         if(folder.exists()&&folder.isDirectory()){ //폴더가 존재하면서 디렉토리인가?
+            // .listFiles() : 객체가 가리키는 디렉토리 안에 있는 모든 파일 및 하위 디렉토리를 배열로 반환
             File[] inculedFiles = folder.listFiles();
             for(File file : inculedFiles){
                 if(file.isDirectory()){
-                    deleteFolder(file.getAbsolutePath(), true);
+                    deleteFolder(file.getAbsolutePath(), true); //재귀호출
                 }else {
                     file.delete();
                 }

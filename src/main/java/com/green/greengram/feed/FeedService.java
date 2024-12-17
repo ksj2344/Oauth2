@@ -123,11 +123,6 @@ public class FeedService {
             pics.add(item.getPic());//value(List<String>타입)의 주소에 item의 사진이 추가됨
         }
 
-        for(FeedGetRes res : list){
-            res.setPics(picHashMap.get(res.getFeedId()));
-        }
-        log.info("feedService>list:{}", list);
-
         //피드와 관련된 댓글 리스트
         List<FeedCommentDto> feedCommentList = feedCommentMapper.selFeedCommentListByFeedIds(feedIds);
         Map<Long, FeedCommentGetRes> commentHashMap=new HashMap<>();
@@ -146,10 +141,10 @@ public class FeedService {
             res.setPics(picHashMap.get(res.getFeedId()));
             FeedCommentGetRes feedCommentGetRes=commentHashMap.get(res.getFeedId());
 
-            if(feedCommentGetRes==null){
+            if(feedCommentGetRes==null){ //feed에 달린 댓글이 하나도 없다면
                 feedCommentGetRes=new FeedCommentGetRes();
                 feedCommentGetRes.setCommentList(new ArrayList<>());
-            }else if(feedCommentGetRes.getCommentList().size()==4){
+            }else if(feedCommentGetRes.getCommentList().size()==4){ //가져온 댓글이 4개라면
                 feedCommentGetRes.setMoreComment(true);
                 feedCommentGetRes.getCommentList().remove(feedCommentGetRes.getCommentList().size()-1);
             }

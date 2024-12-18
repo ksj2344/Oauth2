@@ -3,6 +3,8 @@ package com.green.greengram.user;
 import com.green.greengram.common.model.ResultResponse;
 import com.green.greengram.user.model.*;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -28,8 +30,8 @@ public class UserController {
 
     @PostMapping("sign-in")
     @Operation(summary = "로그인")
-    public ResultResponse<UserSignInRes> signIn(@RequestBody UserSignInReq q) {
-        UserSignInRes res=service.postSignIn(q);
+    public ResultResponse<UserSignInRes> signIn(@RequestBody UserSignInReq q, HttpServletResponse response) {
+        UserSignInRes res=service.postSignIn(q,response);
         return ResultResponse.<UserSignInRes>builder()
                 .resultMessage(res.getMessage())
                 .resultData(res)
@@ -46,7 +48,18 @@ public class UserController {
                 .build();
     }
 
+    @GetMapping("access-token")
+    @Operation(summary = "accessToken 재발행")
+    public ResultResponse<String> getAccessToken(HttpServletRequest req) {
+        String accessToken = service.getAccessToken(req);
+        return ResultResponse.<String>builder()
+                .resultMessage("Access Token 재발행")
+                .resultData(accessToken)
+                .build();
+    }
+
     @PatchMapping("pic") //부분수정은 PatchMapping, 전체수정은 PutMapping 한다.
+    @Operation(summary = "프로필 사진 수정")
     public ResultResponse<String> patchProfilePic(@ModelAttribute UserPicPatchReq p){
         log.info("UserController>patchProfilePic>p: {}", p);
         return ResultResponse.<String>builder()

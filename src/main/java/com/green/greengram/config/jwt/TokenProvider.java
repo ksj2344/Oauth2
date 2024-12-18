@@ -87,7 +87,9 @@ public class TokenProvider {
         return userDetails==null
                 ?null
                 :new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                                //Authentication을 구현화한 객체의 생성자 호출, userDetails.getAuthorities(): 권한
+                                //Authentication을 구현화한 객체의 생성자 호출,
+                                //userDetails : 사용자 정보
+                                // userDetails.getAuthorities(): 사용자 권한
     }
 
     public UserDetails getUserDetailsFromToken(String token) {
@@ -95,7 +97,7 @@ public class TokenProvider {
         String json=(String)claims.get("signedUser");
         JwtUser jwtUser= null;
         try {
-            jwtUser = objectMapper.readValue(json, JwtUser.class);
+            jwtUser = objectMapper.readValue(json, JwtUser.class); //readValue(): JSON을 역직렬화
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }

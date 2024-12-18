@@ -11,7 +11,7 @@ public class CookieUtils {
     //Req header에서 내가 원하는 쿠키를 찾는 메소드
     public Cookie getCookie(HttpServletRequest req, String name) {
         Cookie[] cookies = req.getCookies();
-        if (cookies != null|| cookies.length > 0) {
+        if (cookies != null && cookies.length > 0) {
             for (Cookie cookie : cookies) {
                 if (cookie.getName().equals(name)) {
                     return cookie;

@@ -1,6 +1,7 @@
 package com.green.greengram.feed;
 
 import com.green.greengram.common.MyFileUtils;
+import com.green.greengram.config.security.AuthenticationFacade;
 import com.green.greengram.feed.comment.FeedCommentMapper;
 import com.green.greengram.feed.comment.model.FeedCommentDto;
 import com.green.greengram.feed.comment.model.FeedCommentGetReq;
@@ -26,8 +27,10 @@ public class FeedService {
     private final FeedPicMapper feedPicMapper;
     private final FeedCommentMapper feedCommentMapper;
     private final MyFileUtils myFileUtils;
+    private final AuthenticationFacade authenticationFacade;
 
     public FeedPostRes postFeed(List<MultipartFile> pics, FeedPostReq p){
+        p.setWriterUserId(authenticationFacade.getSignedUserId());
         feedMapper.insFeed(p);
 
         // 파일 등록
@@ -60,6 +63,7 @@ public class FeedService {
     }
 
     public List<FeedGetRes> getFeedList(FeedGetReq p){
+        p.setSignedUserId(authenticationFacade.getSignedUserId());
         // N+1 이슈 발생
         List<FeedGetRes> list=feedMapper.selFeedList(p);
         //피드 가져오기
@@ -89,9 +93,12 @@ public class FeedService {
 
     //select 3번으로처리. 피드 5,000개 있음, 페이지당 20개씩 가져온다.
     public List<FeedGetRes> getFeedList2(FeedGetReq p){
+        p.setSignedUserId(authenticationFacade.getSignedUserId());
         //피드 리스트
         List<FeedGetRes> list=feedMapper.selFeedList(p);
-
+        if(list.size()==0){
+            return list;
+        }
         //feed_id를 골라내야한다.
         List<Long> feedIds=new ArrayList<>(list.size());
         for(FeedGetRes r:list){
@@ -169,6 +176,7 @@ public class FeedService {
 
     @Transactional
     public int deleteFeed(FeedDeleteReq p) {
+        p.setSignedUserId(authenticationFacade.getSignedUserId());
         //피드 댓글, 좋아요, 사진삭제
         int affectedRows = feedMapper.delFeedLikeAndFeedCommentAndFeedPic(p);
         log.info("deleteFeed > affectedRows: {}", affectedRows); //사진때문에 0이 될 수 없음

@@ -1,7 +1,9 @@
 package com.green.greengram.config.security;
 //Spring Security 세팅
 
+import com.green.greengram.config.jwt.TokenAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -10,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
@@ -17,6 +20,7 @@ import static org.springframework.boot.autoconfigure.security.servlet.PathReques
 @Configuration //메소드 빈등록, 싱글톤으로 사용된다.
 @RequiredArgsConstructor
 public class WebSecurityConfig {
+    private final TokenAuthenticationFilter tokenAuthenticationFilter;
     //스프링 시큐리티 일부 비활성화
     //이 경로로 요청이 오는것은 security가 관여하지 않는다. (그러나 좋은 방법이 아님)
 //    @Bean
@@ -36,10 +40,12 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/api/user").authenticated() //get방식으로 들어오는것 모두 막는다.
                         .requestMatchers(HttpMethod.PATCH,"/api/user/pic").authenticated() //patch방식으로 들어오는것 모두 막는다.
                         .anyRequest().permitAll()) //나머지 요청은 허용
+                .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
+    //반환타입이 PasswordEncoder타입이어도 됨
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }

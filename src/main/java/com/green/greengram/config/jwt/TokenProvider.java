@@ -88,7 +88,7 @@ public class TokenProvider {
                 ?null
                 :new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                                 //Authentication을 구현화한 객체의 생성자 호출,
-                                //userDetails : 사용자 정보
+                                //userDetails : 사용자 정보(Principal)
                                 // userDetails.getAuthorities(): 사용자 권한
     }
 

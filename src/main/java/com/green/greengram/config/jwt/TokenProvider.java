@@ -92,7 +92,7 @@ public class TokenProvider {
                                 // userDetails.getAuthorities(): 사용자 권한
     }
 
-    public UserDetails getUserDetailsFromToken(String token) {
+    public JwtUser getJwtUserFromToken(String token) {
         Claims claims=getClaims(token);
         String json=(String)claims.get("signedUser");
         JwtUser jwtUser= null;
@@ -101,6 +101,11 @@ public class TokenProvider {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+        return jwtUser;
+    }
+
+    public UserDetails getUserDetailsFromToken(String token) {
+        JwtUser jwtUser= getJwtUserFromToken(token);
         MyUserDetails userDetails=new MyUserDetails();
         userDetails.setJwtUser(jwtUser);
         return userDetails;

@@ -30,6 +30,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0'// swagger
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-security' //security 추가
+    implementation 'org.springframework.boot:spring-boot-starter-validation' //유효성검사 추가
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:3.0.3'
     compileOnly 'org.projectlombok:lombok' //애는 안붙여도 최신버젼 들어옴. 나머지는 안붙이면 3.3.6

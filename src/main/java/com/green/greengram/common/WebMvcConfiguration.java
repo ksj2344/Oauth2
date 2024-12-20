@@ -2,11 +2,16 @@ package com.green.greengram.common;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.HandlerTypePredicate;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.resource.PathResourceResolver;
+
+import java.io.IOException;
 
 @Configuration
 //@Component도 가능 하다. Component는 빈등록을 하는 모든 에노테이션의 부모 에노테이션
@@ -22,9 +27,23 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) { //이 메소드는 spring이 호출해줌
         registry.addResourceHandler("/pic/**").addResourceLocations("file:" + uploadPath+"/");
+
+        //새로고침 시 화면이 나타날 수 있도록 세팅
+        registry.addResourceHandler("/**")
+                .addResourceLocations("classpath:/static/**")  //classpath가 resources 폴더 말하는거임
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver(){
+                    @Override
+                    protected Resource getResource(String resourcePath, Resource location) throws IOException {
+                        Resource resource=location.createRelative(resourcePath);
+                        if(resource.exists()&&resource.isReadable()){
+                            //리눅스의 경우 파일을 읽기만 가능하거나 쓰기만 가능하거나 권한 지정이 가능함
+                        return resource;
+                        }
+                        return new ClassPathResource("/static/index.html"); //static에 있는 파일이 아닌 경로를 요청하면 index 파일 불러옴
+                    }
+                });
     }
-    // 서버에 /pic/파일명.jpg 로 요청하면 /${file.directory}/파일명.jpg로 인식하도록 하겠다.
-    // /pic은  /${file.directory}(=D:/ksj/download/greengram_ver1) 이다.
 
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {

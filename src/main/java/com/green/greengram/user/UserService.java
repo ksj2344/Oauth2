@@ -4,6 +4,7 @@ import com.green.greengram.common.CookieUtils;
 import com.green.greengram.common.MyFileUtils;
 import com.green.greengram.config.jwt.JwtUser;
 import com.green.greengram.config.jwt.TokenProvider;
+import com.green.greengram.config.security.AuthenticationFacade;
 import com.green.greengram.user.model.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +30,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder; //WebSecurityConfig에서 빈등록된 메소드 객체
     private final TokenProvider tokenProvider;
     private final CookieUtils cookieUtils;
+    private final AuthenticationFacade authenticationFacade;
 
     public int postSignUp(MultipartFile pic, UserSignUpReq p) {
         String hashedPassword= passwordEncoder.encode(p.getUpw()); //Bcrypt에서 하던 gensalt는 encode가 알아서 해줌
@@ -64,36 +66,39 @@ public class UserService {
             return res;
         }
 
-        // JWT 토큰 생성: AccessToken(20분), RefreshToken(15일)
+        // JWT 토큰 생성: AccessToken(100분)<-인증용, RefreshToken(15일)<-재발행용
         JwtUser jwtUser = new JwtUser();
         jwtUser.setSignedUserId(res.getUserId());
         List<String> roles = new ArrayList<>(2);
         roles.add("ROLE_USER");
         roles.add("ROLE_ADMIN");
         jwtUser.setRoles(roles);
-        String accessToken=tokenProvider.generateToken(jwtUser, Duration.ofMinutes(20));
+        String accessToken=tokenProvider.generateToken(jwtUser, Duration.ofMinutes(100));
         String refreshToken=tokenProvider.generateToken(jwtUser, Duration.ofDays(15));
 
         //refreshToken은 쿠키에 담는다.
         int maxAge=1_296_000; //15*24*60*60, 15일의 초(second)값
-        cookieUtils.setCookie(response,"refreshToken",refreshToken,maxAge);
+        cookieUtils.setCookie(response,"refreshToken",refreshToken,maxAge); //요청, 이름, value, 만료시간
         res.setMessage("로그인 성공");
         res.setAccessToken(accessToken);
         return res;
     }
 
     public UserInfoGetRes GetUserInfo(UserInfoGetReq req) {
+        req.setSignedUserId(authenticationFacade.getSignedUserId());
         return mapper.selUserInfo(req);
     }
 
     public String getAccessToken(HttpServletRequest req) {
         Cookie cookie= cookieUtils.getCookie(req,"refreshToken");
         String refreshToken=cookie.getValue();
-        log.info("refreshToken:{}",refreshToken);
-        return refreshToken;
+        JwtUser jwtUser = tokenProvider.getJwtUserFromToken(refreshToken);
+        String accessToken=tokenProvider.generateToken(jwtUser, Duration.ofMinutes(100));
+        return accessToken;
     }
 
     public String patchUserPic (UserPicPatchReq p){
+        p.setSignedUserId(authenticationFacade.getSignedUserId());
         //1. 저장할 파일명(랜덤한 파일명) 생성한다. 이때, 확장자는 오리지널 파일명과 일치하게 한다.
         String savedPicName=p.getPic() != null? myFileUtils.makeRandomFileName(p.getPic()):null;
         //파일 먼저 만들기(있으면 실행 안하고 없으면 오류남)

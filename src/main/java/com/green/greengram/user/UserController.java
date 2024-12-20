@@ -51,6 +51,7 @@ public class UserController {
     @GetMapping("access-token")
     @Operation(summary = "accessToken 재발행")
     public ResultResponse<String> getAccessToken(HttpServletRequest req) {
+        //servlet: 필터를 거쳐 들어온 모든 요청을 URL을 통해 어느 컨트롤러를 호출할지 찾아가게 해줌.
         String accessToken = service.getAccessToken(req);
         return ResultResponse.<String>builder()
                 .resultMessage("Access Token 재발행")

@@ -1,5 +1,5 @@
 package com.green.greengram.config.jwt;
-//필터(요청이 올 때마다 실행됨)
+//필터(css든 java파일이든 요청이 올 때마다 실행되어 JWT을 검사함)
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,18 +26,19 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter { //OncePerR
         //HttpServletRequest: 쿼리스트링과 ip를 비롯한 모든 request정보가 여기 담김.
         log.info("ip address:{}",request.getRemoteAddr());
         String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);//Bearer 토큰값
+        //헤더가 없다면 authorizationHeader가 null이됨
         log.info("authorizationHeader:{}",authorizationHeader);
 
         String token = getAccessToken(authorizationHeader); //토큰 얻어오기
         log.info("token:{}",token);
 
-        if(tokenProvider.validToken(token)) { //정상인지 확인
+        if(tokenProvider.validToken(token)) { //토큰이 정상인지 확인
             Authentication auth = tokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(auth); //SecurityContextHolder에 Authentication 적용
         }
 
 
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(request, response); //다음 필터에게 전달
     }
 
     public String getAccessToken(String authorizationHeader) {

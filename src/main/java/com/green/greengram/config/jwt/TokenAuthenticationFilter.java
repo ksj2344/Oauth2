@@ -32,12 +32,14 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter { //OncePerR
         String token = getAccessToken(authorizationHeader); //토큰 얻어오기
         log.info("token:{}",token);
 
-        if(tokenProvider.validToken(token)) { //토큰이 정상인지 확인
-            Authentication auth = tokenProvider.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(auth); //SecurityContextHolder에 Authentication 적용
+        if(token != null) {
+            try {
+                Authentication auth = tokenProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            } catch (Exception e) {
+                request.setAttribute("exception", e);
+            }
         }
-
-
         filterChain.doFilter(request, response); //다음 필터에게 전달
     }
 

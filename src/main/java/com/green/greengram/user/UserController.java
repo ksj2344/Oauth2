@@ -5,6 +5,7 @@ import com.green.greengram.user.model.*;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -30,10 +31,10 @@ public class UserController {
 
     @PostMapping("sign-in")
     @Operation(summary = "로그인")
-    public ResultResponse<UserSignInRes> signIn(@RequestBody UserSignInReq q, HttpServletResponse response) {
+    public ResultResponse<UserSignInRes> signIn(@Valid @RequestBody UserSignInReq q, HttpServletResponse response) {
         UserSignInRes res=service.postSignIn(q,response);
         return ResultResponse.<UserSignInRes>builder()
-                .resultMessage(res.getMessage())
+                .resultMessage("로그인 성공")
                 .resultData(res)
                 .build();
     }

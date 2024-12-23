@@ -2,6 +2,8 @@ package com.green.greengram.config.jwt;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.green.greengram.common.exception.CustomException;
+import com.green.greengram.common.exception.UserErrorCode;
 import com.green.greengram.config.security.MyUserDetails;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
@@ -68,15 +70,6 @@ public class TokenProvider {
         }
     }
 
-    //JWT 복호화
-    public boolean validToken(String token) {
-        try{
-            getClaims(token);
-        }catch (Exception e){
-            return false;
-        }
-        return true;
-    }
 
     //Spring Security에서 인증처리 하기. Authentication 객체가 필요함.
     //Authentication: Security의 미들웨어. 부품같은거라고보면됨. spring framework security로 import할것.

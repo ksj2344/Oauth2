@@ -1,6 +1,7 @@
 package com.green.greengram.config.security;
 //Spring Security 세팅
 
+import com.green.greengram.config.jwt.JwtAuthenticationEntryPoint;
 import com.green.greengram.config.jwt.TokenAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -21,6 +22,8 @@ import static org.springframework.boot.autoconfigure.security.servlet.PathReques
 @RequiredArgsConstructor
 public class WebSecurityConfig {
     private final TokenAuthenticationFilter tokenAuthenticationFilter;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
     //스프링 시큐리티 일부 비활성화
     //이 경로로 요청이 오는것은 security가 관여하지 않는다. (그러나 좋은 방법이 아님)
 //    @Bean
@@ -40,6 +43,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/api/user").authenticated() //get방식으로 들어오는것 모두 막는다.
                         .requestMatchers(HttpMethod.PATCH,"/api/user/pic").authenticated() //patch방식으로 들어오는것 모두 막는다.
                         .anyRequest().permitAll()) //나머지 요청은 허용
+                .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

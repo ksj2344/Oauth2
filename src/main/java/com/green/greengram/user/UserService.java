@@ -2,6 +2,8 @@ package com.green.greengram.user;
 
 import com.green.greengram.common.CookieUtils;
 import com.green.greengram.common.MyFileUtils;
+import com.green.greengram.common.exception.CustomException;
+import com.green.greengram.common.exception.UserErrorCode;
 import com.green.greengram.config.jwt.JwtUser;
 import com.green.greengram.config.jwt.TokenProvider;
 import com.green.greengram.config.security.AuthenticationFacade;
@@ -56,14 +58,8 @@ public class UserService {
 
     public UserSignInRes postSignIn(UserSignInReq p, HttpServletResponse response) {
         UserSignInRes res= mapper.selUserByUid(p.getUid());
-        if(res==null) {
-            res =new UserSignInRes();
-            res.setMessage("아이디 확인해주세요.");
-            return res;
-        }else if (!passwordEncoder.matches(p.getUpw(), res.getUpw())) {
-            res =new UserSignInRes();
-            res.setMessage("비밀번호를 확인해주세요.");
-            return res;
+        if(res==null || !passwordEncoder.matches(p.getUpw(), res.getUpw())){
+            throw new CustomException(UserErrorCode.INCORRECT_ID_PW);
         }
 
         // JWT 토큰 생성: AccessToken(100분)<-인증용, RefreshToken(15일)<-재발행용
@@ -73,7 +69,7 @@ public class UserService {
         roles.add("ROLE_USER");
         roles.add("ROLE_ADMIN");
         jwtUser.setRoles(roles);
-        String accessToken=tokenProvider.generateToken(jwtUser, Duration.ofMinutes(100));
+        String accessToken=tokenProvider.generateToken(jwtUser, Duration.ofSeconds(30));
         String refreshToken=tokenProvider.generateToken(jwtUser, Duration.ofDays(15));
 
         //refreshToken은 쿠키에 담는다.
@@ -93,7 +89,7 @@ public class UserService {
         Cookie cookie= cookieUtils.getCookie(req,"refreshToken");
         String refreshToken=cookie.getValue();
         JwtUser jwtUser = tokenProvider.getJwtUserFromToken(refreshToken);
-        String accessToken=tokenProvider.generateToken(jwtUser, Duration.ofMinutes(100));
+        String accessToken=tokenProvider.generateToken(jwtUser, Duration.ofSeconds(30));
         return accessToken;
     }
 

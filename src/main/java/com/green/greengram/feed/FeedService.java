@@ -1,6 +1,8 @@
 package com.green.greengram.feed;
 
 import com.green.greengram.common.MyFileUtils;
+import com.green.greengram.common.exception.CustomException;
+import com.green.greengram.common.exception.FeedErrorCode;
 import com.green.greengram.config.security.AuthenticationFacade;
 import com.green.greengram.feed.comment.FeedCommentMapper;
 import com.green.greengram.feed.comment.model.FeedCommentDto;
@@ -31,7 +33,10 @@ public class FeedService {
 
     public FeedPostRes postFeed(List<MultipartFile> pics, FeedPostReq p){
         p.setWriterUserId(authenticationFacade.getSignedUserId());
-        feedMapper.insFeed(p);
+        int result=feedMapper.insFeed(p);
+        if(result==0){
+            throw new CustomException(FeedErrorCode.FAIL_TO_REG);
+        }
 
         // 파일 등록
         // D:/ksj/download/greengram_ver2/feed/${feedId}/파일명
@@ -48,7 +53,10 @@ public class FeedService {
             try{
                 myFileUtils.transferTo(pic, filePath);
             }catch(IOException e){
-                e.printStackTrace();
+               //폴더 삭제 처리
+                String delFolderPath=String.format("%s/%s", myFileUtils.getUploadPath(),middlePath);
+                myFileUtils.deleteFolder(delFolderPath,true);
+                throw new CustomException(FeedErrorCode.FAIL_TO_REG);
             }
         }
         FeedPicDto feedPicDto=new FeedPicDto();

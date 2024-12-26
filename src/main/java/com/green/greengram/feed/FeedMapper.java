@@ -9,6 +9,8 @@ import java.util.List;
 public interface FeedMapper {
     int insFeed(FeedPostReq p);
     List<FeedGetRes> selFeedList(FeedGetReq p);
+    List<FeedAndPicDto> selFeedWithPicList(FeedGetReq p); //pic도 같이 가져오는경우(M+1해결)
+    List<FeedWithPicCommentDto> selFeedWithPicAndCommentLimit4List(FeedGetReq p);
 
     int delFeedLikeAndFeedCommentAndFeedPic(FeedDeleteReq p);
     int delFeed(FeedDeleteReq p);

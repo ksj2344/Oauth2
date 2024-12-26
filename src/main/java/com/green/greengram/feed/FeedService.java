@@ -16,10 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Log4j2
 @Service
@@ -170,16 +167,68 @@ public class FeedService {
 
     //select 2번으로처리
     public List<FeedGetRes> getFeedList3(FeedGetReq p){
-        //피드 리스트
-        List<FeedGetRes> res=feedMapper.selFeedList(p);
+        List<FeedGetRes> list = new ArrayList<>(p.getSize());
 
-        //피드와 관련된 사진 리스트
+        //SELECT (1): feed + feed_pic
+        List<FeedAndPicDto> feedAndPicDtoList = feedMapper.selFeedWithPicList(p);
+        List<Long> feedIds = new ArrayList<>(list.size());
 
-        //피드와 관련된 댓글 리스트
+        FeedGetRes beforeFeedGetRes = new FeedGetRes();
+        for(FeedAndPicDto feedAndPicDto : feedAndPicDtoList) { //처음시작할때 beforeFeedGetRes는 0
+            if(beforeFeedGetRes.getFeedId() != feedAndPicDto.getFeedId()) {
+                feedIds.add(feedAndPicDto.getFeedId());
+                beforeFeedGetRes = new FeedGetRes();
+                beforeFeedGetRes.setPics(new ArrayList<>(3));
+                list.add(beforeFeedGetRes);
+                beforeFeedGetRes.setFeedId(feedAndPicDto.getFeedId());
+                beforeFeedGetRes.setContents(feedAndPicDto.getContents());
+                beforeFeedGetRes.setLocation(feedAndPicDto.getLocation());
+                beforeFeedGetRes.setCreatedAt(feedAndPicDto.getCreatedAt());
+                beforeFeedGetRes.setWriterUserId(feedAndPicDto.getWriterUserId());
+                beforeFeedGetRes.setWriterNm(feedAndPicDto.getWriterNm());
+                beforeFeedGetRes.setWriterPic(feedAndPicDto.getWriterPic());
+                beforeFeedGetRes.setIsLike(feedAndPicDto.getIsLike());
+            }
+            beforeFeedGetRes.getPics().add(feedAndPicDto.getPic()); //feedId마다 사진을 받아 저장
+        }
 
-        return null;
+        //SELECT (2) : feed_comment
+        List<FeedCommentDto> feedCommentList = feedCommentMapper.selFeedCommentListByFeedIds(feedIds);
+        Map<Long, FeedCommentGetRes> commentHashMap = new HashMap<>();
+        for(FeedCommentDto item : feedCommentList) {
+            long feedId = item.getFeedId();
+            if(!commentHashMap.containsKey(feedId)) {
+                FeedCommentGetRes feedCommentGetRes = new FeedCommentGetRes();
+                feedCommentGetRes.setCommentList(new ArrayList<>(4));
+                commentHashMap.put(feedId, feedCommentGetRes);
+            }
+            FeedCommentGetRes feedCommentGetRes = commentHashMap.get(feedId);
+            feedCommentGetRes.getCommentList().add(item);
+        }
+        for(FeedGetRes res : list) {
+            FeedCommentGetRes feedCommentGetRes = commentHashMap.get(res.getFeedId());
+
+            if(feedCommentGetRes == null) { //댓글이 하나도 없었던 피드인 경우
+                feedCommentGetRes = new FeedCommentGetRes();
+                feedCommentGetRes.setCommentList(new ArrayList<>());
+            } else if (feedCommentGetRes.getCommentList().size() == 4) {
+                feedCommentGetRes.setMoreComment(true);
+                feedCommentGetRes.getCommentList().remove(feedCommentGetRes.getCommentList().size() - 1);
+            }
+            res.setComment(feedCommentGetRes);
+        }
+        return list;
     }
 
+    //select 1번으로처리
+    public List<FeedGetRes> getFeedList4(FeedGetReq p){
+        List<FeedWithPicCommentDto> dtoList=feedMapper.selFeedWithPicAndCommentLimit4List(p);
+        List<FeedGetRes> list=new ArrayList<>(dtoList.size());
+        for(FeedWithPicCommentDto dto : dtoList) {
+            list.add(new FeedGetRes(dto));
+        }
+        return list;
+    }
 
 
     @Transactional

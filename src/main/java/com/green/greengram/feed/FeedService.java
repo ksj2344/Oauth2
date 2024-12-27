@@ -174,7 +174,7 @@ public class FeedService {
         List<Long> feedIds = new ArrayList<>(list.size());
 
         FeedGetRes beforeFeedGetRes = new FeedGetRes();
-        for(FeedAndPicDto feedAndPicDto : feedAndPicDtoList) { //처음시작할때 beforeFeedGetRes는 0
+        for(FeedAndPicDto feedAndPicDto : feedAndPicDtoList) { //처음시작할때 beforeFeedGetRes의 feedId는 0
             if(beforeFeedGetRes.getFeedId() != feedAndPicDto.getFeedId()) {
                 feedIds.add(feedAndPicDto.getFeedId());
                 beforeFeedGetRes = new FeedGetRes();

@@ -6,10 +6,10 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 
 @ConfigurationPropertiesScan //활성화가 되어야지만 가동된다
 @SpringBootApplication
-public class GreenGramSecurityApplication {
+public class GreenGramTddApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(GreenGramSecurityApplication.class, args);
+        SpringApplication.run(GreenGramTddApplication.class, args);
     }
 
 }

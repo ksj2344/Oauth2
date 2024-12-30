@@ -8,4 +8,4 @@ spring:
     password: green502
   sql:
     init:
-      mode: always
+      mode: never

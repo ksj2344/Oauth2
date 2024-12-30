@@ -41,6 +41,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testCompileOnly 'org.projectlombok:lombok:1.18.36'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.36'
 }
 // jar:애플리케이션 압축파일
 // compileOnly 컴파일할 때만 쓰는 것, 개발할 때만 필요하다.  compile: computer가 이해할 수 있도록 transfer하는 거

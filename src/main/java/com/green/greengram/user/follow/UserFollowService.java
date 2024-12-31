@@ -11,12 +11,12 @@ public class UserFollowService {
     private final UserFollowMapper mapper;
     private final AuthenticationFacade authenticationFacade;
 
-    public int follow(UserFollowReq p){
+    public int postUserFollow(UserFollowReq p){
         p.setFromUserId(authenticationFacade.getSignedUserId());
-        return mapper.follow(p);
+        return mapper.insUserFollow(p);
     }
-    public int unfollow(UserFollowReq p){
+    public int deleteUserFollow(UserFollowReq p){
         p.setFromUserId(authenticationFacade.getSignedUserId());
-        return mapper.unFollow(p);
+        return mapper.delUserFollow(p);
     }
 }

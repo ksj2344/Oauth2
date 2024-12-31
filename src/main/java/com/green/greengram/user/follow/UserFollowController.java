@@ -22,7 +22,7 @@ public class UserFollowController {
         log.info("UserFollowController>postUserFollow>p:{}",p);
         return ResultResponse.<Integer>builder()
                 .resultMessage("Follow")
-                .resultData(service.follow(p))
+                .resultData(service.postUserFollow(p))
                 .build();
     }
 
@@ -33,7 +33,7 @@ public class UserFollowController {
         log.info("UserFollowController>deleteUserFollow>p:{}",p);
         return ResultResponse.<Integer>builder()
                 .resultMessage("UnFollow")
-                .resultData(service.unfollow(p))
+                .resultData(service.deleteUserFollow(p))
                 .build();
     }
 }

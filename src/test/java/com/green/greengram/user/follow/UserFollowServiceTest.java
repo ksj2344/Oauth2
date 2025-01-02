@@ -15,13 +15,13 @@ import static org.mockito.BDDMockito.given;
 //Spring Test Context (컨테이너)를 이용하지 않는다.
 @ExtendWith(MockitoExtension.class)
 class UserFollowServiceTest {
-    @InjectMocks
-    UserFollowService userFollowService; //Mockito가 객체화를 직접 한다.
+    @InjectMocks //Mockito가 객체화를 직접 한다.
+    UserFollowService userFollowService;
 
     @Mock //가짜 객체를 만든다. 선언부는 있지만 내용부는 없이 객체화한다.
     UserFollowMapper userFollowMapper;
 
-    @Mock
+    @Mock //얘도 userFollowService를 위한 가짜 객체
     AuthenticationFacade authenticationFacade;
 
     static final long fromUserId1 = 1L;
@@ -29,10 +29,6 @@ class UserFollowServiceTest {
 
     static final long fromUserId3 = 3L;
     static final long toUserId4 = 4L;
-
-
-    static final UserFollowReq userFollowReq1_2=new UserFollowReq(toUserId2);
-    static final UserFollowReq userFollowReq3_4=new UserFollowReq(toUserId4);
 
     @Test
     @DisplayName("PostUserFollow 테스트")

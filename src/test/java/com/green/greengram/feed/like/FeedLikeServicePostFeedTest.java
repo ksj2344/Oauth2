@@ -2,7 +2,6 @@ package com.green.greengram.feed.like;
 
 import com.green.greengram.config.security.AuthenticationFacade;
 import com.green.greengram.feed.like.model.FeedLikeReq;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +12,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.mockito.BDDMockito.given;
 import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
-class FeedLikeServiceTest {
+class FeedLikeServicePostFeedTest {
     @InjectMocks
     private FeedLikeService feedLikeService;
     @Mock

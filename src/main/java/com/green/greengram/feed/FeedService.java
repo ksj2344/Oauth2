@@ -33,13 +33,15 @@ public class FeedService {
         int result=feedMapper.insFeed(p);
         if(result==0){
             throw new CustomException(FeedErrorCode.FAIL_TO_REG);
-        }
+        } //별로 의미있는 예외처리는 아님. result가 0이 될 일이 없어서
+        //insert는 실행되지 않으면 예외가 발생하지 0이 넘어올 일이 없기 때문
 
         // 파일 등록
         // D:/ksj/download/greengram_ver2/feed/${feedId}/파일명
         long feedId=p.getFeedId();
         String middlePath=String.format("feed/%d",feedId);
         myFileUtils.makeFolders(middlePath);
+
 
         //랜덤파일명 저장용 >> feed_pics 테이블에 저장할 때 사용
         List<String> picNameList=new ArrayList<>(pics.size());

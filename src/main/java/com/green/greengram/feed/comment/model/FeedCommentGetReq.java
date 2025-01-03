@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -17,6 +18,7 @@ import java.beans.ConstructorProperties;
  */
 @Getter
 @ToString
+@EqualsAndHashCode
 public class FeedCommentGetReq{
     @Positive
     @Schema(title = "피드PK",name="feed_id",example ="1" ,requiredMode = Schema.RequiredMode.REQUIRED)

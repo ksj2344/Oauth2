@@ -2,10 +2,7 @@ package com.green.greengram.feed.model;
 
 
 import com.green.greengram.feed.comment.model.FeedCommentGetRes;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.List;
 
@@ -13,6 +10,7 @@ import java.util.List;
 @Setter
 @ToString
 @NoArgsConstructor
+@EqualsAndHashCode
 public class FeedGetRes {
     private long feedId;
     private long writerUserId;
@@ -36,12 +34,11 @@ public class FeedGetRes {
         createdAt = dto.getCreatedAt();
         isLike = dto.getIsLike();
         pics = dto.getPics();
-        FeedCommentGetRes commentGetRes = new FeedCommentGetRes();
-        commentGetRes.setMoreComment(dto.getCommentList().size()==4?true:false);
-        commentGetRes.setCommentList(dto.getCommentList());
-        if(commentGetRes.isMoreComment()){
-            commentGetRes.getCommentList().remove(commentGetRes.getCommentList().size()-1);
+        comment = new FeedCommentGetRes();
+        comment.setMoreComment(dto.getCommentList().size()==4);
+        comment.setCommentList(dto.getCommentList());
+        if(comment.isMoreComment()){
+            dto.getCommentList().remove(dto.getCommentList().size()-1);
         }
-        comment = commentGetRes;
     }
 }

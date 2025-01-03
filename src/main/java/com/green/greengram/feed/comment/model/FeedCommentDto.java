@@ -1,6 +1,7 @@
 package com.green.greengram.feed.comment.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import lombok.Setter;
 //DataTransferObject
 @Getter
 @Setter
+@EqualsAndHashCode
 public class FeedCommentDto {
     @JsonIgnore
     private long feedId;

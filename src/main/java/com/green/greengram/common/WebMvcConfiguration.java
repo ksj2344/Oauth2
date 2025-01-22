@@ -6,6 +6,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.HandlerTypePredicate;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -25,8 +26,15 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     }
 
     @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedOrigins("*");
+    }
+
+    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) { //이 메소드는 spring이 호출해줌
         registry.addResourceHandler("/pic/**").addResourceLocations("file:" + uploadPath+"/");
+
+
 
         //새로고침 시 화면이 나타날 수 있도록 세팅
         registry.addResourceHandler("/**")

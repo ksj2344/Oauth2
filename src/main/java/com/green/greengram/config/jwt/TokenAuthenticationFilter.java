@@ -14,7 +14,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 @Slf4j
-@Component
 @RequiredArgsConstructor
 public class TokenAuthenticationFilter extends OncePerRequestFilter { //OncePerRequestFilter 필터의 타입.
     private final TokenProvider tokenProvider;

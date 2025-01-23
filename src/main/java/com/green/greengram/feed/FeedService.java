@@ -28,6 +28,7 @@ public class FeedService {
     private final MyFileUtils myFileUtils;
     private final AuthenticationFacade authenticationFacade;
 
+    @Transactional //자동커밋종료
     public FeedPostRes postFeed(List<MultipartFile> pics, FeedPostReq p){
         p.setWriterUserId(authenticationFacade.getSignedUserId());
         int result=feedMapper.insFeed(p);

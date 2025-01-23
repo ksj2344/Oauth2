@@ -29,3 +29,6 @@ public class FeedLikeController {
                 .build();
     }
 }
+
+// RestController: JSON으로 응답하기위함(Restful의 Rest), CilentSideRendering(CSR)할 때 씀
+// Controller쓸 때: SeverSideRendering(SSR)

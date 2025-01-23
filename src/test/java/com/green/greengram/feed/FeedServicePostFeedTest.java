@@ -28,6 +28,12 @@ import static org.mockito.Mockito.*;
 
 class FeedServicePostFeedTest extends FeedServiceParentTest {
 
+    /*
+        given-준비
+        when-실행
+        then-단언
+     */
+
     @Test
     @DisplayName("Insert시 영향받은 행이 0일 때, 예외 발생")
     void postFeedInsRows0ThrowException() {

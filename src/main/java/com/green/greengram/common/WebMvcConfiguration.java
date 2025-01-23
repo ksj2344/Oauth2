@@ -38,7 +38,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
         //새로고침 시 화면이 나타날 수 있도록 세팅
         registry.addResourceHandler("/**")
-                .addResourceLocations("classpath:/static/**")  //classpath가 resources 폴더 말하는거임
+                .addResourceLocations("classpath:/static/")  //classpath가 resources 폴더 말하는거임
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver(){
                     @Override

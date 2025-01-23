@@ -3,6 +3,7 @@ package com.green.greengram.config.security;
 
 import com.green.greengram.config.jwt.JwtAuthenticationEntryPoint;
 import com.green.greengram.config.jwt.TokenAuthenticationFilter;
+import com.green.greengram.config.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +22,7 @@ import static org.springframework.boot.autoconfigure.security.servlet.PathReques
 @Configuration //메소드 빈등록, 싱글톤으로 사용된다.
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-    private final TokenAuthenticationFilter tokenAuthenticationFilter;
+    private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     //스프링 시큐리티 일부 비활성화
@@ -44,7 +45,7 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.PATCH,"/api/user/pic").authenticated() //patch방식으로 들어오는것 모두 막는다.
                         .anyRequest().permitAll()) //나머지 요청은 허용
                 .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-                .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new TokenAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

@@ -39,6 +39,7 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor' //yml의 내용을 객체로 만들수있음
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test:6.4.2'
     testImplementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter-test:3.0.3'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     testCompileOnly 'org.projectlombok:lombok:1.18.36'

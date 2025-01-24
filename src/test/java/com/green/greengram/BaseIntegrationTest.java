@@ -16,6 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 @AutoConfigureMockMvc
 @Transactional
 public class BaseIntegrationTest {
-    @Autowired protected MockMvc mvc;
+    @Autowired protected MockMvc mockMvc;
     @Autowired protected ObjectMapper objectMapper;
 }

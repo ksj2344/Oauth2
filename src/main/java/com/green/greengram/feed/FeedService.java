@@ -4,6 +4,8 @@ import com.green.greengram.common.MyFileUtils;
 import com.green.greengram.common.exception.CustomException;
 import com.green.greengram.common.exception.FeedErrorCode;
 import com.green.greengram.config.security.AuthenticationFacade;
+import com.green.greengram.entity.Feed;
+import com.green.greengram.entity.User;
 import com.green.greengram.feed.comment.FeedCommentMapper;
 import com.green.greengram.feed.comment.model.FeedCommentDto;
 import com.green.greengram.feed.comment.model.FeedCommentGetReq;
@@ -27,19 +29,29 @@ public class FeedService {
     private final FeedCommentMapper feedCommentMapper;
     private final MyFileUtils myFileUtils;
     private final AuthenticationFacade authenticationFacade;
+    private final FeedRepository feedRepository;
 
-    @Transactional //자동커밋종료
+    //@Transactional //자동커밋종료
     public FeedPostRes postFeed(List<MultipartFile> pics, FeedPostReq p){
-        p.setWriterUserId(authenticationFacade.getSignedUserId());
-        int result=feedMapper.insFeed(p);
-        if(result==0){
-            throw new CustomException(FeedErrorCode.FAIL_TO_REG);
-        } //별로 의미있는 예외처리는 아님. result가 0이 될 일이 없어서
+        User signedUser = new User();
+        signedUser.setUserId(authenticationFacade.getSignedUserId());
+
+        Feed feed = new Feed();
+        feed.setUser(signedUser);
+        feed.setContents(p.getContents());
+        feed.setLocation(p.getLocation());
+
+//        int result=feedMapper.insFeed(p);
+//        if(result==0){
+//            throw new CustomException(FeedErrorCode.FAIL_TO_REG);
+//        } //별로 의미있는 예외처리는 아님. result가 0이 될 일이 없어서
         //insert는 실행되지 않으면 예외가 발생하지 0이 넘어올 일이 없기 때문
+
+        feedRepository.save(feed);
 
         // 파일 등록
         // D:/ksj/download/greengram_ver2/feed/${feedId}/파일명
-        long feedId=p.getFeedId();
+        long feedId=feed.getFeedId();
         String middlePath=String.format("feed/%d",feedId);
         myFileUtils.makeFolders(middlePath);
 

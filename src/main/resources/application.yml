@@ -27,8 +27,8 @@ spring:
   jpa:
     database: mysql
     hibernate:
-      #ddl-auto: create #entity를 서버 기동때마다 drop 후 create한다.
-      ddl-auto: update  #entity가 없으면 create, 기존에 존재하는 것은 컬럼을 새롭게 추가하는 것만 반영.
+      ddl-auto: create #entity를 서버 기동때마다 drop 후 create한다.
+      #ddl-auto: update  #entity가 없으면 create, 기존에 존재하는 것은 컬럼을 새롭게 추가하는 것만 반영.
     properties:
       hibernate:
         jdbc:
@@ -36,6 +36,7 @@ spring:
         format_sql: true #로그 찍을 때 보기 편하게 포맷팅 #출력을 보기 편하게
         order_updates: true #JPA Batch 작업 , 모았다가 한번에 작업하는 것.
     show-sql: true #JPA가 만든 쿼리문 로그에 출력
+
   servlet:
     multipart:
       max-file-size: 15MB

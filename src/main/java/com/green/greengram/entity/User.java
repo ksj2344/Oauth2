@@ -11,7 +11,7 @@ public class User extends UpdatedAt {
     @Id //PK지정
     @GeneratedValue(strategy = GenerationType.IDENTITY) //auto_increment 설정   //GenerationType.AUTO를 사용하면 시퀀스를 부여하게 됨. 이건 Oracle쓸때 씀.
     private Long userId;
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 30, unique = true) //unique 설정 추가
     private String uid;
     @Column(nullable = false, length = 100)
     private String upw;

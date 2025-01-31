@@ -2,7 +2,7 @@
   default-page-size: 20
 
 file:
-  directory: D:/ksj/download/greengramSecurity
+  directory: D:/ksj/download/greengramjpa
 
 
 jwt:
@@ -27,7 +27,8 @@ spring:
   jpa:
     database: mysql
     hibernate:
-      ddl-auto: create #entity를 서버 기동때마다 drop 후 create한다.
+      #ddl-auto: create #entity를 서버 기동때마다 drop 후 create한다.
+      ddl-auto: update  #entity가 없으면 create, 기존에 존재하는 것은 컬럼을 새롭게 추가하는 것만 반영.
     properties:
       hibernate:
         jdbc:

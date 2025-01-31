@@ -2,7 +2,7 @@ INSERT INTO `user`
 (`user_id`, `uid`, `upw`, `nick_name`, `pic`, `created_at`) VALUES
 (1, 'mic', '$2a$10$cVRpfytmEdzvs1I4oqqRXOWUleJHm6xKjOnHqA3EEJ5.Q0cAtbhte', '홍길동', NULL, '2024-11-01 10:10:01'),
 (2, 'jacob', '$2a$10$cVRpfytmEdzvs1I4oqqRXOWUleJHm6xKjOnHqA3EEJ5.Q0cAtbhte', '제이콥', NULL, '2024-11-01 10:10:02');
-
+/*
 INSERT INTO `feed`
 (`feed_id`, `writer_user_id`, `contents`, `location`, `created_at`, `updated_at`) VALUES
 (1, 1, '1번 글', '1번 위치', '2024-11-01 10:10:01', NULL),
@@ -25,3 +25,5 @@ INSERT INTO `feed_comment`
 (4, 4, 2, '4번 댓글', '2024-11-01 10:10:04'),
 (5, 5, 1, '5번 댓글', '2024-11-01 10:10:05'),
 (6, 1, 2, '6번 댓글', '2024-11-01 10:10:06');
+
+ */

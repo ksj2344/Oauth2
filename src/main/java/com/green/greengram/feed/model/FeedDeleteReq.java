@@ -9,7 +9,7 @@ import java.beans.ConstructorProperties;
 @Getter
 @Schema(title = "피드 DELETE 요청")
 public class FeedDeleteReq {
-    @Schema(description = "피드 PK", example = "2", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "피드 PK",name="feed_id", example = "2", requiredMode = Schema.RequiredMode.REQUIRED)
     private long feedId;
     @JsonIgnore
     private long signedUserId;

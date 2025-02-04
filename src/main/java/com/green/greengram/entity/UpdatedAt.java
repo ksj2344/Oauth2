@@ -17,6 +17,6 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 public class UpdatedAt extends CreatedAt {
     @LastModifiedDate //update가 됐을 때 현재 일시값을 넣는다. 이 애노테이션이 작동을 하려면 @EntityListeners 세팅이 되어있어야함.
-    @Column(nullable = false) //NOT NULL
+    @Column
     private LocalDateTime updatedAt;
 }

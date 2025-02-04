@@ -130,7 +130,7 @@ class FeedCommentControllerTest {
         final int RESULT=3;
         FeedCommentDelReq givenParam=new FeedCommentDelReq(feedCommentId_3);
 
-        given(feedCommentService.delComment(givenParam)).willReturn(RESULT);
+        //given(feedCommentService.delComment(givenParam)).willReturn(RESULT);
 
         ResultActions resultActions=mockMvc.perform(delete(BASE_URL)
                 .queryParam("feed_comment_id", String.valueOf(givenParam.getFeedCommentId())));

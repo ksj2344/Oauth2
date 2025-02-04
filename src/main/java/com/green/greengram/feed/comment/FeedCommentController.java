@@ -59,9 +59,10 @@ public class FeedCommentController {
     @DeleteMapping
     public ResultResponse<Integer> delFeedComment(@ParameterObject FeedCommentDelReq p){
         log.info("FeedCommentController > delFeedComment > p: {}", p);
+        service.delComment(p);
         return ResultResponse.<Integer>builder()
                 .resultMessage("댓글 삭제")
-                .resultData(service.delComment(p))
+                .resultData(1)
                 .build();
     }
 

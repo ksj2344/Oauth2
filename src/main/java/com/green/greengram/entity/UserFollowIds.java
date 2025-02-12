@@ -21,4 +21,6 @@ public class UserFollowIds implements Serializable {
     1. @Embeddable
     2. @EqualsAndHashCode
     3. implements Serializable
+
+    Ids만들 때는 객체가 아니라 타입으로 적어주면 됨.
  */

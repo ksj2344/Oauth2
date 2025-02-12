@@ -8,4 +8,4 @@ spring:
     password: green502
   sql:
     init:
-      mode: never #resourse아래에 있는 schema.sql(table생성 DDL) , data.sql(데이터 insert DML)파일을 프로젝트(테스트)시작시 실행.
+      mode: always #resourse아래에 있는 schema.sql(table생성 DDL) , data.sql(데이터 insert DML)파일을 프로젝트(테스트)시작시 실행.

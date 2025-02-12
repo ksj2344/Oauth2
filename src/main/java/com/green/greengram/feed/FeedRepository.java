@@ -11,13 +11,17 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+
+//mybatis를 꼭 쓸 필요 없다. collection이나 resultMap을 안쓸거다. 그러면 아래를 쓰는게 좋다.
+
 @Repository //없어도 자동으로 등록됨
 public interface FeedRepository extends JpaRepository<Feed, Long> {  //기본적인 CRUD는 JpaRepository가 만들어줌
+    //by절에 쓸 수 있는거 property명 적어주면 됨.
     Optional<Feed> findByFeedIdAndWriterUser(Long feedId, User writerUser);
     //쿼리메소드: findByFeedIdAndWriterUser = select 피드정보 from feed where feedId= , userId=
     //반환이 단일이면 Optional로 감싸주는게 좋음.(list는 null반환을 안함).
 
-    //쿼리 메소드로 delete, update는 비추천
+    //쿼리 메소드로 delete, update는 비추천. 위가 좀더 유연하다.
     int deleteByFeedIdAndWriterUser(Long feedId, User writerUser);
 
     //JPQL (Java Persistence Query Language)
@@ -34,5 +38,15 @@ public interface FeedRepository extends JpaRepository<Feed, Long> {  //기본적
         WHERE f.feed_id= 1
         AND f.user_id= 2
     */
+
+    /*
+        만약 sql문 그대로 쓰고 싶다면?
+            @Modifying
+            @Query(value = "delete from feed f where f.feed_id=:feedId and f.writer_user_id=:writerUserId", nativeQuery = true)
+            int deleteFeedSql(Long feedId,Long writerUserId);
+
+        허나 유지보수성이 뛰어나서 그냥 JPQL 쓰는게 좋음. 리팩토링 리네임이 가능하다
+     */
+
 
 }

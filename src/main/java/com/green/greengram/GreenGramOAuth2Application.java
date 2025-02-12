@@ -8,10 +8,10 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableJpaAuditing //auditing 기능 활성화
 @ConfigurationPropertiesScan //활성화가 되어야지만 가동된다
 @SpringBootApplication
-public class GreenGramJpaApplication {
+public class GreenGramOAuth2Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(GreenGramJpaApplication.class, args);
+        SpringApplication.run(GreenGramOAuth2Application.class, args);
     }
 
 }

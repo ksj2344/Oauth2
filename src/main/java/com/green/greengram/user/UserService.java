@@ -7,6 +7,7 @@ import com.green.greengram.common.exception.UserErrorCode;
 import com.green.greengram.config.jwt.JwtUser;
 import com.green.greengram.config.jwt.TokenProvider;
 import com.green.greengram.config.security.AuthenticationFacade;
+import com.green.greengram.config.security.SignInProviderType;
 import com.green.greengram.entity.User;
 import com.green.greengram.user.model.*;
 import jakarta.servlet.http.Cookie;
@@ -45,6 +46,7 @@ public class UserService {
         log.info("hashedPassword: {}", hashedPassword);
 
         User user = new User();
+        user.setProviderType(SignInProviderType.LOCAL);
         user.setNickName(p.getNickName());
         user.setUid(p.getUid());
         user.setUpw(hashedPassword);
@@ -74,7 +76,7 @@ public class UserService {
     }
 
     public UserSignInRes postSignIn(UserSignInReq p, HttpServletResponse response) {
-        User user=userRepository.findByUid(p.getUid()); //PK를 알 때는 findById를 사용 가능
+        User user=userRepository.findByUidAndProviderType(p.getUid(), SignInProviderType.LOCAL); //local로그인
         //UserSignInRes res= mapper.selUserByUid(p.getUid());
         if(user==null || !passwordEncoder.matches(p.getUpw(), user.getUpw())){
             throw new CustomException(UserErrorCode.INCORRECT_ID_PW);

@@ -1,9 +1,22 @@
-﻿const:
+﻿global:
+  oauth2:
+    base-uri: /oauth2/authorization #FE 소셜 로그인 요청할 때 사용할 주소값.
+    # 플랫폼과 통신을 3번 정도 하는데 각 통신들이 하나의 작업을 위한 트랜잭션이라는 것을
+    # 연결시키기 위해 쿠키를 사용한다.
+    # OAuth2UserRequest 여기서 쿠키를 받아옴.
+    authorization-request-cookie-name: oauth2_auth_request
+    redirect-uri-param-cookie-name: redirect_url
+    cookie-expiry-second: 180
+    authorized-redirect-uris: # FE에서 요청할 redirect uri 주소 지정
+      - http://localhost:8080/fe/redirect
+      - http://192.168.0.144:5221/fe/redirect
+      - http://112.222.157.156:5221/fe/redirect
+
+const:
   default-page-size: 20
 
 file:
   directory: D:/ksj/download/greengramjpa
-
 
 jwt:
   issuer: green@green.kr #아무거나 써도 됨

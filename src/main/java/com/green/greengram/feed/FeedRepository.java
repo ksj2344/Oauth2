@@ -16,7 +16,9 @@ import java.util.Optional;
 
 @Repository //없어도 자동으로 등록됨
 public interface FeedRepository extends JpaRepository<Feed, Long> {  //기본적인 CRUD는 JpaRepository가 만들어줌
-    //by절에 쓸 수 있는거 property명 적어주면 됨.
+    //by절에 쓸 수 있는거 property명
+    //
+    // 적어주면 됨.
     Optional<Feed> findByFeedIdAndWriterUser(Long feedId, User writerUser);
     //쿼리메소드: findByFeedIdAndWriterUser = select 피드정보 from feed where feedId= , userId=
     //반환이 단일이면 Optional로 감싸주는게 좋음.(list는 null반환을 안함).

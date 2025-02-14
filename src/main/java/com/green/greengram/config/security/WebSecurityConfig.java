@@ -1,9 +1,11 @@
 package com.green.greengram.config.security;
 //Spring Security 세팅
 
+import com.green.greengram.common.GlobalOauth2;
 import com.green.greengram.config.jwt.JwtAuthenticationEntryPoint;
 import com.green.greengram.config.jwt.TokenAuthenticationFilter;
 import com.green.greengram.config.jwt.TokenProvider;
+import com.green.greengram.config.security.oauth.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
@@ -24,6 +26,14 @@ import static org.springframework.boot.autoconfigure.security.servlet.PathReques
 public class WebSecurityConfig {
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    //OAuth2
+    private final Oauth2AuthenticationCheckRedirectUriFilter oauth2AuthenticationCheckRedirectUriFilter;
+    private final Oauth2AuthenticationRequestBasedOnCookieRepository repository;
+    private final Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
+    private final Oauth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
+    private final MyOauth2UserService myOauth2UserService;
+    private final GlobalOauth2 globalOauth2;
 
     //스프링 시큐리티 일부 비활성화
     //이 경로로 요청이 오는것은 security가 관여하지 않는다. (그러나 좋은 방법이 아님)
@@ -46,6 +56,14 @@ public class WebSecurityConfig {
                         .anyRequest().permitAll()) //나머지 요청은 허용
                 .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .addFilterBefore(new TokenAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login( oauth2 -> oauth2.authorizationEndpoint( auth -> auth.baseUri( globalOauth2.getBaseUri() )
+                                            .authorizationRequestRepository(repository))  //baseUrl로 요청이 오면 repository로 응답
+                        .redirectionEndpoint( redirection -> redirection.baseUri("/*/oauth2/code/*") )
+                                        //BE가 사용하는 redirectUri이다. 플랫폼마다 설정을 할 예정
+                        .userInfoEndpoint( userInfo -> userInfo.userService(myOauth2UserService) )
+                        .successHandler(oauth2AuthenticationSuccessHandler)
+                        .failureHandler(oauth2AuthenticationFailureHandler) )
+                .addFilterBefore(oauth2AuthenticationCheckRedirectUriFilter, Oauth2AuthenticationCheckRedirectUriFilter.class)
                 .build();
     }
 

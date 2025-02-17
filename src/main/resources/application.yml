@@ -4,8 +4,10 @@
     # 플랫폼과 통신을 3번 정도 하는데 각 통신들이 하나의 작업을 위한 트랜잭션이라는 것을
     # 연결시키기 위해 쿠키를 사용한다.
     # OAuth2UserRequest 여기서 쿠키를 받아옴.
+
+    # FE와 아래 이름 맞출것.
     authorization-request-cookie-name: oauth2_auth_request
-    redirect-uri-param-cookie-name: redirect_url
+    redirect-uri-param-cookie-name: redirect_uri
     cookie-expiry-second: 180
     authorized-redirect-uris: # FE에서 요청할 redirect uri 주소 지정
       - http://localhost:8080/fe/redirect
@@ -50,8 +52,8 @@ spring:
               - email
               - profile
           kakao:
-            client-id: Kakao
-            client-secret: a
+            client-id: ${SOCIAL.KAKAO.CLIENT_ID}
+            client-secret: ${SOCIAL.KAKAO.SECRET}
             client-authentication-method: client_secret_post #client-id, client-secret이 쿼리스트링으로 날아가야함
             authorization-grant-type: authorization_code #권한 부여 유형(인가코드 > access-token 받는 방식 선택)
             redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"

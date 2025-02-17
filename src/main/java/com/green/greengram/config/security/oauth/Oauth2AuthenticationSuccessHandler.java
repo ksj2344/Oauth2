@@ -34,7 +34,7 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
             log.error("onAuthenticationSuccess call with a committed response {}", res);
             return;
         }
-        String targetUrl = this.determineTargetUrl(req, res);
+        String targetUrl = this.determineTargetUrl(req, res, auth);
         log.info("onAuthenticationSuccess targetUrl={}", targetUrl);
         clearAuthenticationAttributes(req, res);
         getRedirectStrategy().sendRedirect(req, res, targetUrl); // "fe/redirect?access_token=dddd&user_id=12"
@@ -73,7 +73,7 @@ public class Oauth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
         return UriComponentsBuilder.fromUriString(targetUrl)
                 .queryParam("access_token", accessToken)
                 .queryParam("user_id", oAuth2JwtUser.getSignedUserId())
-                .queryParam("nick_name", oAuth2JwtUser.getNickName())
+                .queryParam("nick_name", oAuth2JwtUser.getNickName()).encode()
                 .queryParam("pic", oAuth2JwtUser.getPic())
                 .build()
                 .toUriString();

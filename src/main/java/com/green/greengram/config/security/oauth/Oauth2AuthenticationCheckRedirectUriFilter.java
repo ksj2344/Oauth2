@@ -30,7 +30,7 @@ public class Oauth2AuthenticationCheckRedirectUriFilter extends OncePerRequestFi
          */
         String requestUri = request.getRequestURI(); //서버에 요청을 보내는 주소값
         log.info("request uri: {}", requestUri);
-        if(requestUri.startsWith("/oauth/authorize")) { //뒤에 쿼리스트링으로 들어오므로 해당 uri로 시작한다면 소셜로그인으로 취급.
+        if(requestUri.startsWith(globalOauth2.getBaseUri())) { //뒤에 쿼리스트링으로 들어오므로 해당 uri로 시작한다면 소셜로그인으로 취급.
             //소셜 로그인이 맞다면 redirect값과 맞는지 확인한다.
             String redirectUri= request.getParameter("redirect_uri"); //쿼리스트링이나 body에 있는 정보를 받아옴. 둘다 있으면 쿼리스트링 먼저 받아옴.
             // 주소 ? redirect_uri=abc 라면 abc를 받아올 것.

@@ -52,8 +52,8 @@ spring:
               - email
               - profile
           kakao:
-            client-id: ${SOCIAL.KAKAO.CLIENT_ID}
-            client-secret: ${SOCIAL.KAKAO.SECRET}
+            client-id: ${SOCIAL.KAKAO.CLIENT_ID}  #앱설정>앱키>REST API 키
+            client-secret: ${SOCIAL.KAKAO.SECRET}  #카카오로그인>보안>Client Secret
             client-authentication-method: client_secret_post #client-id, client-secret이 쿼리스트링으로 날아가야함
             authorization-grant-type: authorization_code #권한 부여 유형(인가코드 > access-token 받는 방식 선택)
             redirect-uri: "{baseUrl}/{action}/oauth2/code/{registrationId}"
